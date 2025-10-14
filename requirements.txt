@@ -1,0 +1,11 @@
+pandas>=2.2
+numpy>=2.2
+matplotlib>=3.9
+seaborn>=0.13
+scikit-learn==1.7.1
+imbalanced-learn==0.14.0
+xgboost==3.0.5
+lightgbm==4.6.0
+wordcloud>=1.9
+ipykernel>=6.29
+jupyterlab>=4.4
