@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Secret scan (basic)
+        run: |
+          set -e
+          PATTERN='sk-[A-Za-z0-9]{20,}|ghp_[0-9A-Za-z]{36,}|gho_[0-9A-Za-z]{36,}|xox[baprs]-[0-9A-Za-z-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY-----|password[[:space:]]*[:=]|senha[[:space:]]*[:=]|api[_-]?key[[:space:]]*[:=]|token[[:space:]]*[:=]'
+          if grep -RInE "$PATTERN" . --exclude-dir=".git" --exclude-dir=".github" --exclude-dir="data" || true; then
+            echo "Potential secrets found. Please remove before commit." >&2
+            exit 1
+          fi
+
+      - name: Ensure no CSVs are versioned outside data/
+        run: |
+          set -e
+          CSV_OUTSIDE=$(git ls-files '*.csv' | grep -v '^data/' || true)
+          if [ -n "$CSV_OUTSIDE" ]; then
+            echo "CSV files tracked outside data/:" >&2
+            echo "$CSV_OUTSIDE" >&2
+            exit 1
+          fi
+
