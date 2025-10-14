@@ -11,6 +11,7 @@ __pycache__/
 # Environments
 .env
 .env.*
+!.env.example
 .venv/
 venv/
 env/
@@ -30,4 +31,3 @@ logs/
 # Packaging
 dist/
 build/
-
